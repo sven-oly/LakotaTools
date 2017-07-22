@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>{{language}} Database Upload Results</title>
+
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css">
+
+  </head>
+  
+  <body>
+  <h1>Upload {{language}} CV file to database from CSV file.</h1>
+  <h2>{{numberLoaded}} entries were added to database {{dbname}}</h2>
+  
+  {% for entry in entries %}
+    <p class="unicodeText">{{entry.index}} {{entry.PhraseLatin}}{{entry.englishPhrase}} {{entry.PhraseUnicode}} {{entry.comment}}</p>
+  {% endfor %}
+  </body>
+</html>

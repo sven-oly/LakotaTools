@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Upload CSV data</title>
+  </head>
+  
+  <body>
+  <h2>Upload CV file to database from CSV file.</h2>
+    <form action="{{upload_url}}" method="POST" enctype="multipart/form-data">
+        Upload CSV File:
+        <input type="file" name="csv_file"> <br>
+        {% if dbNameList|length > 0 %}
+        Database Name:
+        <select id="dbName" name="dbName">
+          {% for dbName in dbNames %}
+            <option value="{{dbName}}">{{dbName}}</option>
+          {% endfor %}
+        </select><br />
+        {% endif %}
+        <br />
+        <!-- 
+          <p>{{language}} column: <input type="text" size=3 name="latinColumn">
+          -->
+        <p>{{language}} Unicode column: <input type="text" size=3 name="unicodeColumn">
+        <p>English column: <input type="text" size=3 name="englishColumn">
+        <p>Comment column: <input type="text" size=3 name="commentColumn">
+        <p># lines to skip at start: <input type="text" size=3 name="skipLines" value="0">
+        <p><input type="submit" name="submit" value="Submit">
+    </form>
+  </body>
+</html>

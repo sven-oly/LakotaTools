@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+
+  <title>{{Language}} Cookie Test</title>
+
+  <link rel="stylesheet" href="/css/blueprint/screen.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print"> 
+  <!--[if lt IE 8]>
+    <link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection">
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/css/fonts.css">
+
+  <style>
+   .default {
+     font-family: "Courier New";
+	 font-size: 18px;
+   }
+   .size18 {
+	 font-size: 18px;
+   }
+  </style>
+
+  <script src="/js/utils.js"></script>
+	<!--
+  <script src="/js/osageConverter.js"></script>
+  <script src="/js/osage_utils.js"></script>
+    -->
+    
+  <script type="text/javascript" >
+  function init() {
+    alert("Cookie: " + document.cookie);
+  }
+  </script>
+  </head>
+  
+  <body onload="init()">
+  <div class="container">
+    <h2>Cookie test from {{language}}</h2>
+    <div class="span-20 last">
+	<p>Cookies: {{cookies}}</p>
+	<p>URL: {{url}}</p>
+    </div>
+  </div> <!-- container -->
+  </body>
+</html>

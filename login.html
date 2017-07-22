@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)https://x20web.corp.google.com/~shuchen/vk/demo.html -->
+<html>
+  <head>
+    <title>{{language}} user authenication</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <link rel="stylesheet" href="/css/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print"> 
+    <!--[if lt IE 8]>
+      <link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection">
+    <![endif]-->
+
+</head>    
+<body onload="onPageLoaded()">
+  <div class="container">
+    <div class="span-1">  
+    </div>
+    <div class="span-18 last">
+      <h2>{{language}} login page</h2> 
+    {% if user_nickname %}
+    Welcome, {{user_nickname}}! (<a href="{{user_logout}}">sign out</a>)
+    {% else %}
+    <a href="{{user_login_url}}">Sign in</a>
+    {% endif %}
+    </div>
+  </div>
+
+</body></html>

@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <title>{{language}} user database</title>
+  </head>
+  
+  <body>
+  <h2>{{language}} user database</h2>
+  
+  Hello, {{user_nickname}}
+  <br />
+  {% for user in userlist %}
+  <p>User: {{user.userEmail}} {{user.userPrivileges}} {{user.lastUpdate}}
+  {% endfor %}
+  
+  <form action="/addUser/" method="POST" enctype="multipart/form-data">
+        Add User:
+          <p>{{userEmail}} Email: <input type="text" size=30 name="userEmail">
+           <p>{{userPassword}} Password: <input type="text" size=20 name="userPassword">
+           <p>{{userPrivileges}} Privileges:
+           <!-- TODO: Add check list -->
+           
+        <p><input type="submit" name="submit" value="Submit">
+    </form>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+
+  <title>{{Language}} Phrase Database</title>
+
+  <link rel="stylesheet" href="/css/blueprint/screen.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print"> 
+  <!--[if lt IE 8]>
+    <link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection">
+  <![endif]-->
+
+  <link rel="stylesheet" type="text/css" href="/css/fonts.css">
+
+  <style>
+   .default {
+     font-family: "Courier New";
+	 font-size: 18px;
+   }
+   .size18 {
+	 font-size: 18px;
+   }
+  </style>
+
+  <script src="/js/utils.js"></script>
+	<!--
+  <script src="/js/osageConverter.js"></script>
+  <script src="/js/osage_utils.js"></script>
+    -->
+    
+  <script type="text/javascript" >
+  function init() {
+    var table=document.getElementById("dbTable");
+    var r=1;
+    while(row=table.rows[r++]) {
+      var c=0;
+      var oldText = row.cells[2].innerText;
+      var oldUnicodeText = row.cells[3].innerText;
+      var uText = oldToUnicode(oldText,
+              false, true, false);
+      if (oldUnicodeText && oldUnicodeText != uText) {
+        row.cells[3].style.backgroundColor = "Orange";
+      }
+    }
+  }
+  </script>
+  </head>
+  
+  <body onload="init()">
+  <div class="container">
+    <h2>Data from {{language}} database {{dbaseName}}</h2>
+    <div class="span-8 default">
+    {{entries|length}} entries returned 
+    {% if filter %}
+    <br />
+    Status = "{{filter}}"
+    {% endif %}
+    </div>
+    <div class="span-14 default last">
+    <form action="/words/getPhrases/" id="set_status">
+
+      <input type="radio" name="filterStatus" value="" checked> All phrases
+      <input type="radio" name="filterStatus" value="Unknown"> Unknown 
+      <input type="radio" name="filterStatus" value="Verified"> Verified
+      <br />
+      <input type="radio" name="filterStatus" value="Incorrect"> Incorrect
+      <input type="radio" name="filterStatus" value="Font"> Font
+      <input type="radio" name="filterStatus" value="Other"> Other
+
+      <input type="submit" value="Filter by status">
+    </form>  
+    </div>
+  </div> <!-- container -->
+  <div class="container">
+    <div class="span-1">
+    </div>
+    
+    <div class="span-20">
+    <table id="dbTable">
+    <br />
+      <tr class="default">
+        <th>Index</th>
+        <th>Status</th>
+        <th>{{language}}</th>
+        <th>English</th>
+        <th>Comment</th>
+	  </tr>
+      {% for entry in entries %}
+      <tr class="default">
+        <td><a href="/words/?index={{entry.index}}" target=_blank>{{entry.index}}</a></td>
+        <td>{{entry.status}}</td>
+        <td class="unicodeText size18">{{entry.PhraseUnicode}}</td>
+        <td>{{entry.englishPhrase}}</td>
+        <td>{{entry.comment}}</td>
+     </tr>
+      {% endfor %}
+    </table>
+    </div>
+    <div class="span-3 last">
+    {% if user_nickname %}
+    <h4>Welcome {{user_nickname}}
+      {% if user_logout %}
+        <a href={{user_logout}}>Logout</a>
+      {% endif %}
+    {% else %}
+      <a href='/login/'>NOT LOGGED IN</a>
+      {% if user_login %}
+        <a href={{user_login}}>Log in</a>
+      {% endif %}
+    {% endif %}    </div>
+  </div>
+  </body>
+</html>

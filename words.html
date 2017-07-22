@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+
+  <title>Review Phrases and words</title>
+
+  <link rel="stylesheet" href="/css/blueprint/screen.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print"> 
+  <!--[if lt IE 8]>
+    <link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection">
+  <![endif]-->
+
+  <script src="/js/vk-debug.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="/css/keyboard.css">
+
+  <style>
+  textarea {
+    width: 500px;
+	height: 40px;
+	border: 2px solid #cccccc;
+	padding: 5px;
+	font-size: 18px;
+    font-variant-ligatures: normal;
+	}
+   .default {
+     font-family: "Courier New";
+   }
+  </style>
+
+  <script src="/js/utils.js"></script>
+  <!--
+  <script src="/js/osageConverter.js"></script>
+  <script src="/js/osage_utils.js"></script>
+  -->
+  
+  <script type="text/javascript" >
+
+  // Navigate to phrases.
+  function getPrevious() {
+    indexObj = document.getElementById('index');
+    index = parseInt(indexObj.innerText);
+    if (index > 1) {
+      dataRequest(index - 1, -1);
+    }
+  }
+
+  function getNext() {
+    indexObj = document.getElementById('index');
+    index = parseInt(indexObj.innerText);
+    if (index >= 0) {
+      dataRequest(index + 1, 1);
+    }
+  }
+
+  // Jump to specific index.
+  function goTo(inputArea) {
+    indexObj = document.getElementById(inputArea);
+    index = parseInt(indexObj.value);
+    if (index >= 0) {
+      dataRequest(index, 0);
+    }
+  }
+  
+  // Code to request item from database at index with optional filter.
+  // Direction indicates previous (-1) or next (+1)
+  function dataRequest(index, direction) {
+    // Prepare for the call to the backendvar xmlhttp;
+	if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	} else { // code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+
+    // Deal with the results	  
+    xmlhttp.onreadystatechange=function() {
+	  if(xmlhttp.readyState==4) {
+	      var returned_json = xmlhttp.responseText;
+		  var index = document.getElementById('index');
+		  // var oldOsage = document.getElementById('OldOsage');
+		  var unicodeText = document.getElementById('UnicodeText');
+		  var english = document.getElementById('English');
+		  var newIndex = document.getElementById('newIndex');
+		  var status = document.getElementById('status');
+		  var errorMsg = document.getElementById('errorMsg');
+          var comment = document.getElementById('comment');
+		  var json_obj = JSON.parse(returned_json);
+          if (json_obj.error) {
+            // Warn, and don't change values.
+            alert(json_obj.error);
+            return;
+          }
+          index.value = index.innerHTML = json_obj.index;
+          newIndex.value = newIndex.innerHTML = json_obj.index;
+          // oldOsage.value = oldOsage.innerHTML = json_obj.oldtext;
+          english.value = english.innerHTML = json_obj.english;
+          comment.value = comment.innerHTML = json_obj.comment;
+          unicodeText.value = unicodeText.innerHTML = json_obj.utext;
+
+          var warnStatus = setWarningBox(json_obj.utext, json_obj.oldtext);
+          if (!warnStatus) {
+            // uText is either empty or same as converted.
+            // convertToUnicode('OldOsage', 'UnicodeOsage', 'old_hex');
+          }
+          warning_box = document.getElementById('warning');     
+
+          var newStatus = json_obj.status;
+          if (newStatus == "" || newStatus == "unknown") {
+            newStatus = "Unknown";
+          }
+          
+          status.value = status.innerHTML = newStatus;
+          // Reset the status radio button
+          setStatusRadioButton("updateStatus", newStatus);
+        }          
+      }
+	
+	// Set up the call, with filtering.
+	var filterStatus = getStatusRadioButton("filterStatus");
+    if (direction == 0) {
+      // Should not filter if a direct "go to".
+      filterStatus = "All";
+    }
+	var target = "/words/getWords/?index=" + index + "&filterStatus=" + filterStatus
+	  + "&direction=" + direction;
+	//xmlhttp.open("POST", target, true);
+	xmlhttp.open("GET", target, true);
+	var size = target.length;
+	xmlhttp.send(null);	  
+  }
+
+  function updatePhraseStatus(indexArea, statusSetter) {
+    // Get id and new status value.
+    // Prepare for the call to the backendvar xmlhttp;
+    var indexObj = document.getElementById(indexArea);
+    var index = parseInt(indexObj.innerText);
+    var unicodeData = document.getElementById("UnicodeText").value;
+    //var oldOsageData = document.getElementById("OldOsage").value;
+	if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	} else { // code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+
+    // Deal with the results	  
+    xmlhttp.onreadystatechange=function()
+	{
+	  if(xmlhttp.readyState==4) {
+	      var returned_json = xmlhttp.responseText;
+		  var json_obj = JSON.parse(returned_json);
+		  if (json_obj.status) {
+		    var statusObj = document.getElementById("status"); 
+		    statusObj.value = statusObj.innerHTML = json_obj.status;     
+          }
+        }
+	}
+	
+  	// Set up the call with new status.
+  	var newStatus = getStatusRadioButton(statusSetter); 
+    var comment = document.getElementById('comment').value;
+	
+	var target = "/words/updateStatus/?index=" + index + "&newStatus=" + newStatus +
+	  "&unicodePhrase=" + unicodeData + "&comment=" + comment;
+	xmlhttp.open("GET", target, true);
+	var size = target.length;
+	xmlhttp.send(null);
+ }
+
+  // Which radio button option is checked?
+  function getStatusRadioButton(statusSetter) {
+  	var statusButtons = document.getElementsByName(statusSetter);
+    for (var i = 0; i < statusButtons.length; i++) {       
+      if (statusButtons[i].checked) {
+        return statusButtons[i].value;
+      }
+    }
+    return "";
+  }
+
+  // Set which radio button is checked.
+  function setStatusRadioButton(statusSetter, status) {
+  	// Set up the call with new status.
+  	var statusButtons = document.getElementsByName(statusSetter);
+    for (var i = 0; i < statusButtons.length; i++) {       
+      statusButtons[i].checked = (statusButtons[i].value == status);
+    }
+  }
+
+  function addPhraseToDatastore(UnicodeText, englishText) {
+    
+	if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+	  xmlhttp=new XMLHttpRequest();
+	} else { // code for IE6, IE5
+	  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+
+    // Deal with the results	  
+    xmlhttp.onreadystatechange=function()
+	{
+	  if (xmlhttp.readyState==4) {
+	    var returned_json = xmlhttp.responseText;
+		var json_obj = JSON.parse(returned_json);
+
+        // Set up alert for results.
+        alert(json_obj.message);       
+      }
+	}
+	
+  	// Set up the call to store new phrase information.
+    var uTextObj = document.getElementById(UnicodeText);
+    var englishTextObj = document.getElementById(englishText);
+    var commentObj = document.getElementById('comment');
+    var oldText = ""; // TODO: oldTextObj.value;
+    var unicodeText = uTextObj.value;
+    var englishText = englishTextObj.value; 
+    var commentText = commentObj.value; 
+	var target = "/words/addPhrase/?utext=" + unicodeText +
+	  "&engtext=" + englishText + "&comment=" + commentText;
+	xmlhttp.open("GET", target, true);
+	var size = target.length;
+	xmlhttp.send(null);
+  }
+
+  function onFontSelected(selected) {
+    var output_text = document.getElementById('UnicodeText');
+    // var fontFam = selected.value;
+    //output_text.style.fontFamily = fontFam;
+  }
+  
+  function setWarningBox(oldUText, oldText) {
+    var warning_box = document.getElementById('warning');
+    if (!oldUText) {
+      warning_box.style.display = 'none';
+      return false;
+    }
+    /*var convertedUText = oldOsageToUnicode(oldText,
+         false, true, false);
+    if (convertedUText !== oldUText) {
+      warning_box.style.display = 'block';
+      return true;
+    }
+    else {
+      warning_box.style.display = 'none';
+      return false;
+    }
+    */
+  }
+
+  // Initialize the page.
+  function init() {
+    // Set warning if store is not same as new conversion.
+    var oldText = "";  //document.getElementById('OldText').value;
+    var uText = document.getElementById('UnicodeText').value;
+    var warnStatus = setWarningBox(uText, oldText);
+  
+    if (!warnStatus) {
+      // uText is either empty or same as converted.
+      // convertToUnicode('OldText', 'UnicodeText', 'old_hex');
+    }
+    // Set initial status.
+    var status = document.getElementById("status").innerHTML;
+    setStatusRadioButton("updateStatus", status);
+    
+    setUpKeyboard();    
+  }
+
+  // SET UP VIRTUAL KEYBOARD
+    var controller, visible = true;
+    function setUpKeyboard() {
+      var outputArea = 'UnicodeText';
+      var input = document.getElementById(outputArea);
+      controller = new i18n.input.keyboard.Keyboard();
+      controller.loadLayout('lkt');
+      controller.reposition(input, 2, 0, [1, 0, 0, 0]);
+      controller.register(input);
+      controller.addEventListener('kc', function() { visible = false; });
+      input.focus();
+      var selector = document.getElementById('selectKeyboard');
+      onLayoutSelected(selector, controller, outputArea);
+      onFontSelected(document.getElementById('selectFont'), 't1');
+    }
+
+  function onLayoutSelected(selector, this_controller, outputId) {
+    var layoutCode = selector.value;
+    if (this_controller) {
+      this_controller.activateLayout(layoutCode);
+    } else {  // The global.
+      controller.activateLayout(layoutCode);
+    }
+    document.getElementById(outputId).focus();
+    var vkbox = document.getElementById('kbd');
+    var field = document.getElementById(outputId);
+
+    // onFontSelected('selectFont', 't1');
+  }
+
+    function toggle() {
+      if (controller) {
+        controller.setVisible(visible = !visible);
+      }
+    }
+  </script>
+  
+  </head>
+
+  <body onload="init()">
+  <div class="container">
+    <h2>Data from {{language}} database {{dbaseName}}</h2>
+    <div class="span-1">  
+    </div>
+    <div class="span-16">
+      <h3>Index <span id="index">{{index}}</span> of {{numEntries}}</h3>
+      <!--
+        <textarea id="OldText" class="oldText" >{{oldtext}}</textarea>
+      <br />
+      <input type="button" value="Convert to Unicode"
+           onclick="convertToUnicode('OldOsage',
+                    'UnicodeOsage', 'old_hex');">
+      <input type="checkbox" name="clearOsageDot" id="clearOsageDot" checked>Clear OldOsage dot?
+      <input type="checkbox" name="convertLatin" id="convertLatin" checked>Convert Latin?
+      <input type="checkbox" name="lowerCase" id="DoLower">To lower?
+      Select font: <select onchange="onFontSelected(this);" id="selectKeyboard">
+        {% for font in fontFamilies %}
+        <option value="{{font}}">{{font}}</option>
+        {% endfor %}
+      </select>
+      -->
+      <br />
+      <h3>{{language}} Unicode</h3>
+	  <textarea id="UnicodeText" class="unicodeText">{{utext}}</textarea>
+      <br />
+      <!--
+        <select onchange="onLayoutSelected(this, null, 'UnicodeText')" id="selectKeyboard">
+          <option value="lkt">Lakota Unicode</option>
+        </select>
+        -->
+      <br />
+      <h3>English:</h3>
+      <textarea id="English" class="default">{{english}}</textarea>
+      <br />
+
+	  <!--
+      <input type="button" onclick="toOsageFonts('UnicodeOsage', 'English');" value="To all fonts">
+      <br />
+      -->
+
+      <h4>Status: <span id="status">{{status}}</span></h4>
+      <div id="warning" style="font-size:18px; background-color: orange; display:none;">
+      Warning: The conversion of this data has changed!
+      <br />
+      Please select "Convert to Unicode", check the result, and update status!
+      </div>
+      <br>
+      {% if allowUpdate %}
+      <h4>Change status of this phrase:</h4>
+      <form action="" id="set_status">
+        <input type="radio" name="updateStatus" value="Unknown"> Unknown 
+        <input type="radio" name="updateStatus" value="Verified"> Verified 
+        <input type="radio" name="updateStatus" value="Incorrect"> Incorrect
+        <input type="radio" name="updateStatus" value="Font"> Font
+        <input type="radio" name="updateStatus" value="Other"> Other
+     <input type="button" value="Update status"
+           onclick="updatePhraseStatus('index', 'updateStatus');"/>
+      </form>
+      <br />
+      {% endif %}
+      <h3>Comment:</h3>
+      <textarea id="comment" class="default">{{comment}}</textarea>
+      <br />
+      <div id='errorMsg'>{{error}}</div>
+    </div>
+
+    <div class="span-4 last">
+    {% if user_nickname %}
+    <h4>Welcome {{user_nickname}}
+      {% if user_logout %}
+        <a href={{user_logout}}>Logout</a>
+      {% endif %}
+    {% else %}
+      {% if user_login %}
+        <a href={{user_login}}>Log in</a>
+      {% endif %}
+    {% endif %}
+
+    <h4>{{language}} links</h4>
+    <ul>
+        <li>
+          <a href="/">{{language}} Main</a>
+        </li>
+        <li>
+          <a href="/keyboard/">{{language}} Keyboard</a>
+        </li>
+       <li>
+         <a href="/words/getPhrases/">View database</a>       
+          <br />
+          <br />
+       </li>
+      </ul>
+      
+      <h4>Explore phrases:</h4>
+      <form action="javascript:goTo('newIndex');">
+      <input type="button" value="Previous"
+           onclick="getPrevious();"/>
+      <input type="button" value="Next"
+           onclick="getNext();"/>
+       <br />
+       <input type="submit" value="Go to: "
+          />
+      <input id='newIndex' type=text value='{{index}}' size='3'/>
+      </form>
+      <br />
+
+      <form action="" id="set_status">
+        <input type="radio" name="filterStatus" value="All" checked> All phrases (no filter)
+        <br />
+        <input type="radio" name="filterStatus" value="Unknown"> Unknown 
+        <input type="radio" name="filterStatus" value="Verified"> Verified 
+        <input type="radio" name="filterStatus" value="Incorrect"> Incorrect
+        <input type="radio" name="filterStatus" value="Font"> Font
+        <br />
+        <input type="radio" name="filterStatus" value="Other"> Other
+     </form>  
+     <br />    
+     <hr />
+     <!-- Add a new value to the data store -->
+     {% if allowAddToDB %}
+      <input type="button" onclick="addPhraseToDatastore('UnicodeText', 'English');"
+       value="Add new phrase to database">
+     {% endif %}
+      
+     </div> <!-- end span last -->
+  </div> <!-- end container --> 
+</body>
+</html>

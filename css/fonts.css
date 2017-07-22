@@ -1,0 +1,129 @@
+    /* Private use area. */
+    @font-face{
+      font-family:'Osage';
+      src:url('/fonts/Osage_Font.TTF');
+      font-weight:normal;
+      font-style:normal;
+    }
+
+    /* Unicode fonts */
+    @font-face{
+      font-family:'Wynona';
+      src:url('/fonts/osage-fonts-1-10/Wynona/Wynona.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+    @font-face{
+      font-family:'Pawhuska';
+      src:url('/fonts/osage-fonts-1-10/Pawhuska/Pawhuska.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+    @font-face{
+      font-family:'Avant';
+      src:url('/fonts/osage-fonts-1-10/Avant/Avant.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }   
+    @font-face{
+      font-family:'Barnsdall';
+      src:url('/fonts/osage-fonts-1-10/Barnsdall-OsageDejavuSerif/Barnsdall.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+    @font-face{
+      font-family:'Nelagoney';
+      src:url('/fonts/osage-fonts-1-10/Nelagoney/Nelagoney.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+    @font-face{
+      font-family:'Prue';
+      src:url('/fonts/osage-fonts-1-10/Prue/Prue.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+    @font-face{ 
+      font-family:'Wazhezhe';
+      src:url('/fonts/osage-fonts-1-10/Wazhazhe-OsageTimes/Wazhazhe.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+    
+   @font-face{ 
+      font-family:'Gadugi';
+      src:url('/fonts/gadugi_116.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+
+   @font-face{ 
+      font-family:'NotoSansOsage-Regular';
+      src:url('/fonts/NotoSansOsage.ttf');
+      font-weight:normal;
+      font-style:normal;
+      font-variant-ligatures: normal;
+    }
+
+    .unicodeOsageText {
+      font-family:'Pawhuska';
+      font-size: 32px;
+    }
+
+    .unicodeOsageText12 {
+      font-family:'Pawhuska';
+      font-size: 12px;
+    }
+
+    /* Classes for these text families */
+    .oldOsageText {
+      font-family:'Osage';
+      font-size: 32px;
+    }
+    
+    .pawhuska {
+	font-family:'Pawhuska';
+	font-size: 32px;
+    }
+    .avant {
+	font-family:'Avant';
+	font-size: 32px;
+    }
+    .barnsdall {
+	font-family:'Barnsdall';
+	font-size: 32px;
+    }
+    .nelagoney {
+	font-family:'Nelagoney';
+	font-size: 32px;
+    }
+    .wazhezhe {
+	font-family:'Wazhezhe';
+	font-size: 32px;
+    }
+    .prue {
+	font-family:'Prue';
+	font-size: 32px;
+    }
+    .wynona {
+	font-family:'Wynona';
+	font-size: 32px;
+    }
+
+    .gadugi {
+    font-family:"Gadugi";
+    font-size: 32px;
+    }
+
+    .notosansosage {
+    font-family:"NotoSansOsage";
+    font-size: 32px;
+    }
